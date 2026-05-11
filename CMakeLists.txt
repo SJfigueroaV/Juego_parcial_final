@@ -6,6 +6,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(SFML 3 COMPONENTS Graphics REQUIRED)
 
-add_executable(dungeon src/main.cpp)
+set(SOURCES
+    src/main.cpp
+    src/game.cpp
+)
+
+add_executable(dungeon ${SOURCES})
+
+target_include_directories(dungeon PRIVATE include)
 
 target_link_libraries(dungeon SFML::Graphics)
