@@ -9,6 +9,7 @@ find_package(SFML 3 COMPONENTS Graphics REQUIRED)
 set(SOURCES
     src/main.cpp
     src/game.cpp
+    src/map.cpp
 )
 
 add_executable(dungeon ${SOURCES})
