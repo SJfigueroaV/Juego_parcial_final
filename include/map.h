@@ -17,5 +17,7 @@ struct Habitacion {
 };
 
 void inicializarHabitacionVacia(Habitacion &habitacion);
+void dibujarHabitacion(const Habitacion &habitacion, sf::RenderWindow &ventana);
+bool esPared(const Habitacion &habitacion, int fila, int columna);
 
 #endif

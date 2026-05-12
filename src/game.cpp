@@ -19,6 +19,7 @@ void ejecutarJuego() {
             }
         }
         ventana.clear(sf::Color::Black);
+        dibujarHabitacion(habitacion, ventana);
         ventana.display();
     }
 }
