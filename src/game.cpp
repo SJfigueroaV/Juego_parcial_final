@@ -27,7 +27,7 @@ void ejecutarJuego() {
             }
         }
 
-        manejarEntrada(jugador, dt);
+        manejarEntrada(jugador, habitacion, dt);
 
         ventana.clear(sf::Color::Black);
         dibujarHabitacion(habitacion, ventana);

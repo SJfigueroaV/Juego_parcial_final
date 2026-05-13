@@ -16,7 +16,7 @@ struct Jugador {
 };
 
 void inicializarJugador(Jugador &p, int fila, int columna);
-void manejarEntrada(Jugador &p, float dt);
+void manejarEntrada(Jugador &p, const Habitacion &habitacion, float dt);
 void dibujarJugador(const Jugador &p, sf::RenderWindow &ventana);
 
 #endif
