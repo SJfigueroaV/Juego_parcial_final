@@ -12,12 +12,21 @@ const int T_PARED  = 0;
 const int T_SUELO  = 1;
 const int T_PUERTA = 2;
 
-struct Habitacion {
-    int cuadricula[MAX_COLUMNAS][MAX_FILAS];
+struct Puerta {
+    int  aHabitacion;
+    int  fila, columna;
+    bool bloqueada;
 };
 
-void inicializarHabitacionVacia(Habitacion &habitacion);
+struct Habitacion {
+    int    cuadricula[MAX_COLUMNAS][MAX_FILAS];
+    Puerta puertas[8];
+    int    numPuertas;
+};
+
+void inicializarHabitaciones(Habitacion habitaciones[], int &numHabitaciones);
 void dibujarHabitacion(const Habitacion &habitacion, sf::RenderWindow &ventana);
 bool esPared(const Habitacion &habitacion, int fila, int columna);
+const Puerta *obtenerPuertaEn(const Habitacion &habitacion, int fila, int columna);
 
 #endif

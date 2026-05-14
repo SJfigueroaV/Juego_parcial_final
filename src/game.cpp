@@ -5,8 +5,11 @@
 #include <optional>
 
 void ejecutarJuego() {
-    Habitacion habitacion;
-    inicializarHabitacionVacia(habitacion);
+    Habitacion habitaciones[MAX_HABITACIONES];
+    int numHabitaciones = 0;
+    inicializarHabitaciones(habitaciones, numHabitaciones);
+
+    int habitacionActual = 0;
 
     Jugador jugador;
     inicializarJugador(jugador, 10, 13);
@@ -27,10 +30,10 @@ void ejecutarJuego() {
             }
         }
 
-        manejarEntrada(jugador, habitacion, dt);
+        manejarEntrada(jugador, habitaciones[habitacionActual], dt);
 
         ventana.clear(sf::Color::Black);
-        dibujarHabitacion(habitacion, ventana);
+        dibujarHabitacion(habitaciones[habitacionActual], ventana);
         dibujarJugador(jugador, ventana);
         ventana.display();
     }
