@@ -11,6 +11,7 @@ set(SOURCES
     src/game.cpp
     src/map.cpp
     src/player.cpp
+    src/enemy.cpp
 )
 
 add_executable(dungeon ${SOURCES})

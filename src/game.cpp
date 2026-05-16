@@ -1,6 +1,7 @@
 #include "../include/game.h"
 #include "../include/map.h"
 #include "../include/player.h"
+#include "../include/enemy.h"
 #include <SFML/Graphics.hpp>
 #include <optional>
 
@@ -35,6 +36,10 @@ void ejecutarJuego() {
     Jugador jugador;
     inicializarJugador(jugador, 10, 13);
 
+    Enemigo enemigos[MAX_ENEMIES];
+    int numEnemigos = 0;
+    inicializarEnemigos(enemigos, numEnemigos);
+
     sf::RenderWindow ventana(
         sf::VideoMode(sf::Vector2u{MAX_COLUMNAS * TAM_TILE, MAX_FILAS * TAM_TILE}),
         "Dungeon");
@@ -67,6 +72,7 @@ void ejecutarJuego() {
 
         ventana.clear(sf::Color::Black);
         dibujarHabitacion(habitaciones[habitacionActual], ventana);
+        dibujarEnemigos(enemigos, numEnemigos, ventana, habitacionActual);
         dibujarJugador(jugador, ventana);
         ventana.display();
     }
