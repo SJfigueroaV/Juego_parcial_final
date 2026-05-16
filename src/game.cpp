@@ -58,7 +58,7 @@ void ejecutarJuego() {
         }
 
         manejarEntrada(jugador, habitaciones[habitacionActual], dt);
-        actualizarEnemigos(enemigos, numEnemigos,
+        actualizarEnemigos(enemigos, numEnemigos, jugador,
                            habitaciones[habitacionActual], habitacionActual);
 
         const Puerta *puerta = obtenerPuertaEn(

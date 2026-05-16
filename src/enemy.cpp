@@ -1,4 +1,11 @@
 #include "../include/enemy.h"
+#include <cstdlib>
+
+static int signo(int x) {
+    if (x > 0) return  1;
+    if (x < 0) return -1;
+    return 0;
+}
 
 static void inicializarEnemigo(Enemigo &e, TipoEnemigo tipo, int habitacion,
                                 int fila, int columna,
@@ -26,6 +33,36 @@ void inicializarEnemigos(Enemigo enemigos[], int &numEnemigos) {
     inicializarEnemigo(enemigos[numEnemigos++], PERSEGUIDOR, 4, 17, 22, 0, -1, 9);
 }
 
+static void actualizarPerseguidor(Enemigo &e, const Jugador &jugador,
+                                   const Habitacion &habitacion) {
+    int dFila    = jugador.fila    - e.fila;
+    int dColumna = jugador.columna - e.columna;
+
+    if (dFila == 0 && dColumna == 0) return;
+
+    int sr = signo(dFila);
+    int sc = signo(dColumna);
+
+    bool diagOk = !esPared(habitacion, e.fila + sr, e.columna + sc);
+    bool filaOk = !esPared(habitacion, e.fila + sr, e.columna);
+    bool colOk  = !esPared(habitacion, e.fila, e.columna + sc);
+
+    if (sr != 0 && sc != 0 && diagOk) {
+        e.fila    += sr;
+        e.columna += sc;
+    } else if (filaOk) {
+        if (std::abs(dFila) >= std::abs(dColumna)) {
+            e.fila += sr;
+        } else if (colOk) {
+            e.columna += sc;
+        } else {
+            e.fila += sr;
+        }
+    } else if (colOk) {
+        e.columna += sc;
+    }
+}
+
 static void actualizarPatrullero(Enemigo &e, const Habitacion &habitacion) {
     int siguienteFila    = e.fila + e.dirFila;
     int siguienteColumna = e.columna + e.dirColumna;
@@ -44,6 +81,7 @@ static void actualizarPatrullero(Enemigo &e, const Habitacion &habitacion) {
 }
 
 void actualizarEnemigos(Enemigo enemigos[], int numEnemigos,
+                        const Jugador &jugador,
                         const Habitacion &habitacion, int habitacionActual) {
     for (int i = 0; i < numEnemigos; i++) {
         if (!enemigos[i].vivo || enemigos[i].habitacion != habitacionActual) continue;
@@ -54,9 +92,10 @@ void actualizarEnemigos(Enemigo enemigos[], int numEnemigos,
 
         if (enemigos[i].tipo == PATRULLERO) {
             actualizarPatrullero(enemigos[i], habitacion);
+        } else if (enemigos[i].tipo == PERSEGUIDOR) {
+            actualizarPerseguidor(enemigos[i], jugador, habitacion);
         }
 
-        // Interpolación visual hacia el tile destino
         enemigos[i].x = (float)(enemigos[i].columna * TAM_TILE);
         enemigos[i].y = (float)(enemigos[i].fila    * TAM_TILE);
     }
