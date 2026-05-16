@@ -19,13 +19,47 @@ static void inicializarEnemigo(Enemigo &e, TipoEnemigo tipo, int habitacion,
 
 void inicializarEnemigos(Enemigo enemigos[], int &numEnemigos) {
     numEnemigos = 0;
-    // Habitacion 0: enemigos patrulla
     inicializarEnemigo(enemigos[numEnemigos++], PATRULLERO, 0,  1, 12,  1, 0, 4);
     inicializarEnemigo(enemigos[numEnemigos++], PATRULLERO, 0, 18, 13, -1, 0, 4);
-    // Habitacion 4: chasers
     inicializarEnemigo(enemigos[numEnemigos++], PERSEGUIDOR, 4, 17,  3, 0,  1, 9);
     inicializarEnemigo(enemigos[numEnemigos++], PERSEGUIDOR, 4, 17, 13, 0,  1, 9);
     inicializarEnemigo(enemigos[numEnemigos++], PERSEGUIDOR, 4, 17, 22, 0, -1, 9);
+}
+
+static void actualizarPatrullero(Enemigo &e, const Habitacion &habitacion) {
+    int siguienteFila    = e.fila + e.dirFila;
+    int siguienteColumna = e.columna + e.dirColumna;
+
+    if (esPared(habitacion, siguienteFila, siguienteColumna)) {
+        e.dirFila    = -e.dirFila;
+        e.dirColumna = -e.dirColumna;
+        siguienteFila    = e.fila + e.dirFila;
+        siguienteColumna = e.columna + e.dirColumna;
+    }
+
+    if (!esPared(habitacion, siguienteFila, siguienteColumna)) {
+        e.fila    = siguienteFila;
+        e.columna = siguienteColumna;
+    }
+}
+
+void actualizarEnemigos(Enemigo enemigos[], int numEnemigos,
+                        const Habitacion &habitacion, int habitacionActual) {
+    for (int i = 0; i < numEnemigos; i++) {
+        if (!enemigos[i].vivo || enemigos[i].habitacion != habitacionActual) continue;
+
+        enemigos[i].tiempoMov--;
+        if (enemigos[i].tiempoMov > 0) continue;
+        enemigos[i].tiempoMov = enemigos[i].intervaloMov;
+
+        if (enemigos[i].tipo == PATRULLERO) {
+            actualizarPatrullero(enemigos[i], habitacion);
+        }
+
+        // Interpolación visual hacia el tile destino
+        enemigos[i].x = (float)(enemigos[i].columna * TAM_TILE);
+        enemigos[i].y = (float)(enemigos[i].fila    * TAM_TILE);
+    }
 }
 
 void dibujarEnemigos(const Enemigo enemigos[], int numEnemigos,

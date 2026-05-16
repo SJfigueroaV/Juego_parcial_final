@@ -27,6 +27,8 @@ struct Enemigo {
 };
 
 void inicializarEnemigos(Enemigo enemigos[], int &numEnemigos);
+void actualizarEnemigos(Enemigo enemigos[], int numEnemigos,
+                        const Habitacion &habitacion, int habitacionActual);
 void dibujarEnemigos(const Enemigo enemigos[], int numEnemigos,
                      sf::RenderWindow &ventana, int habitacionActual);
 
