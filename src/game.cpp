@@ -5,6 +5,25 @@
 #include <SFML/Graphics.hpp>
 #include <optional>
 
+bool verificarVictoria(int habitacionActual) {
+    return habitacionActual == 3;
+}
+
+bool verificarDerrota(const Jugador &p, const Enemigo enemigos[], int numEnemigos,
+                     int habitacionActual) {
+    for (int i = 0; i < numEnemigos; i++) {
+        if (!enemigos[i].vivo || enemigos[i].habitacion != habitacionActual) continue;
+        float dx = enemigos[i].x - p.x;
+        float dy = enemigos[i].y - p.y;
+        if (dx < 0) dx = -dx;
+        if (dy < 0) dy = -dy;
+        if (dx < (float)TAM_TILE * 0.5f && dy < (float)TAM_TILE * 0.5f) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static void posicionarEnEntrada(const Habitacion &habitacion, int desdeHabitacion,
                                 Jugador &jugador) {
     for (int d = 0; d < habitacion.numPuertas; d++) {
@@ -24,6 +43,26 @@ static void posicionarEnEntrada(const Habitacion &habitacion, int desdeHabitacio
             return;
         }
     }
+}
+
+static void dibujarOverlayEstado(sf::RenderWindow &ventana, EstadoJuego estado) {
+    if (estado == JUGANDO) return;
+    sf::RectangleShape bg(sf::Vector2f{
+        (float)(MAX_COLUMNAS * TAM_TILE), (float)(MAX_FILAS * TAM_TILE)
+    });
+    bg.setFillColor(sf::Color(0, 0, 0, 180));
+    ventana.draw(bg);
+    sf::RectangleShape centro(sf::Vector2f{(float)TAM_TILE * 6.0f, (float)TAM_TILE * 2.0f});
+    centro.setPosition(sf::Vector2f{
+        (float)(MAX_COLUMNAS * TAM_TILE) / 2.0f - TAM_TILE * 3.0f,
+        (float)(MAX_FILAS * TAM_TILE) / 2.0f - TAM_TILE
+    });
+    if (estado == VICTORIA) {
+        centro.setFillColor(sf::Color(220, 200, 30));
+    } else {
+        centro.setFillColor(sf::Color(180, 30, 30));
+    }
+    ventana.draw(centro);
 }
 
 void ejecutarJuego() {
@@ -47,6 +86,7 @@ void ejecutarJuego() {
 
     sf::Clock reloj;
     bool sobrePuertaAntes = false;
+    EstadoJuego estado = JUGANDO;
 
     while (ventana.isOpen()) {
         float dt = reloj.restart().asSeconds();
@@ -57,25 +97,34 @@ void ejecutarJuego() {
             }
         }
 
-        manejarEntrada(jugador, habitaciones[habitacionActual], dt);
-        actualizarEnemigos(enemigos, numEnemigos, jugador,
-                           habitaciones[habitacionActual], habitacionActual);
+        if (estado == JUGANDO) {
+            manejarEntrada(jugador, habitaciones[habitacionActual], dt);
+            actualizarEnemigos(enemigos, numEnemigos, jugador,
+                               habitaciones[habitacionActual], habitacionActual);
 
-        const Puerta *puerta = obtenerPuertaEn(
-            habitaciones[habitacionActual], jugador.fila, jugador.columna);
-        bool sobrePuerta = (puerta != nullptr);
-        if (sobrePuerta && !sobrePuertaAntes && !puerta->bloqueada) {
-            int destino = puerta->aHabitacion;
-            habitacionActual = destino;
-            posicionarEnEntrada(habitaciones[habitacionActual],
-                                puerta->aHabitacion, jugador);
+            const Puerta *puerta = obtenerPuertaEn(
+                habitaciones[habitacionActual], jugador.fila, jugador.columna);
+            bool sobrePuerta = (puerta != nullptr);
+            if (sobrePuerta && !sobrePuertaAntes && !puerta->bloqueada) {
+                int destino = puerta->aHabitacion;
+                habitacionActual = destino;
+                posicionarEnEntrada(habitaciones[habitacionActual],
+                                    puerta->aHabitacion, jugador);
+            }
+            sobrePuertaAntes = sobrePuerta;
+
+            if (verificarVictoria(habitacionActual)) {
+                estado = VICTORIA;
+            } else if (verificarDerrota(jugador, enemigos, numEnemigos, habitacionActual)) {
+                estado = DERROTA;
+            }
         }
-        sobrePuertaAntes = sobrePuerta;
 
         ventana.clear(sf::Color::Black);
         dibujarHabitacion(habitaciones[habitacionActual], ventana);
         dibujarEnemigos(enemigos, numEnemigos, ventana, habitacionActual);
         dibujarJugador(jugador, ventana);
+        dibujarOverlayEstado(ventana, estado);
         ventana.display();
     }
 }
