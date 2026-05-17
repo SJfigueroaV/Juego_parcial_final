@@ -34,6 +34,11 @@ static void inicializarLlaveMundo(Objeto &obj, int habitacion, int fila, int col
     obj.columna    = columna;
     obj.habitacion = habitacion;
     obj.enSuelo    = true;
+    obj.placeable  = false;
+    obj.singleUse  = true;
+    obj.active     = false;
+    obj.effectTimer = 0.0f;
+    obj.cooldownTimer = 0.0f;
 }
 
 static void posicionarEnEntrada(const Habitacion &habitacion, int desdeHabitacion,
@@ -94,10 +99,14 @@ void ejecutarJuego() {
     Inventario inv;
     inicializarInventario(inv);
 
-    // Llave en la sala 2 (necesaria para abrir puerta a sala 3)
     Objeto objetosMundo[MAX_HABITACIONES];
     for (int i = 0; i < MAX_HABITACIONES; i++) objetosMundo[i].tipo = NINGUNO;
     inicializarLlaveMundo(objetosMundo[2], 2, 5, 12);
+
+    // Items extra disponibles desde el principio: TRAP, SPEEDBOOST, BARREL en slots
+    agregarObjeto(inv, TRAP);
+    agregarObjeto(inv, SPEEDBOOST);
+    agregarObjeto(inv, BARREL);
 
     sf::RenderWindow ventana(
         sf::VideoMode(sf::Vector2u{MAX_COLUMNAS * TAM_TILE, MAX_FILAS * TAM_TILE}),
@@ -116,13 +125,27 @@ void ejecutarJuego() {
             if (evento->is<sf::Event::Closed>()) {
                 ventana.close();
             } else if (auto *kp = evento->getIf<sf::Event::KeyPressed>()) {
-                if (estado == JUGANDO && kp->scancode == sf::Keyboard::Scancode::E) {
-                    verificarRecoleccion(inv, objetosMundo, MAX_HABITACIONES, jugador);
-                    for (int i = 0; i < MAX_SLOTS; i++) {
-                        if (inv.espacios[i].tipo == LLAVE) {
-                            tieneLlave = true;
-                            break;
+                if (estado == JUGANDO) {
+                    if (kp->scancode == sf::Keyboard::Scancode::E) {
+                        verificarRecoleccion(inv, objetosMundo, MAX_HABITACIONES, jugador);
+                        for (int i = 0; i < MAX_SLOTS; i++) {
+                            if (inv.espacios[i].tipo == LLAVE) {
+                                tieneLlave = true;
+                                break;
+                            }
                         }
+                    } else if (kp->scancode == sf::Keyboard::Scancode::P) {
+                        int slot = inv.espacioSeleccionado;
+                        if (inv.espacios[slot].tipo != NINGUNO && inv.espacios[slot].placeable) {
+                            colocarObjeto(inv, slot, jugador.fila, jugador.columna);
+                            inv.espacios[slot].habitacion = habitacionActual;
+                        }
+                    } else if (kp->scancode == sf::Keyboard::Scancode::Num1) {
+                        seleccionarSlot(inv, 0);
+                    } else if (kp->scancode == sf::Keyboard::Scancode::Num2) {
+                        seleccionarSlot(inv, 1);
+                    } else if (kp->scancode == sf::Keyboard::Scancode::Num3) {
+                        seleccionarSlot(inv, 2);
                     }
                 }
             }
@@ -132,6 +155,10 @@ void ejecutarJuego() {
             manejarEntrada(jugador, habitaciones[habitacionActual], dt);
             actualizarEnemigos(enemigos, numEnemigos, jugador,
                                habitaciones[habitacionActual], habitacionActual);
+
+            verificarEfectosObjetos(inv.espacios, MAX_SLOTS,
+                                    jugador, enemigos, numEnemigos, habitacionActual);
+            actualizarTimersObjetos(inv.espacios, MAX_SLOTS, jugador, dt);
 
             const Puerta *puerta = obtenerPuertaEn(
                 habitaciones[habitacionActual], jugador.fila, jugador.columna);
@@ -157,6 +184,7 @@ void ejecutarJuego() {
         ventana.clear(sf::Color::Black);
         dibujarHabitacion(habitaciones[habitacionActual], ventana);
         dibujarObjetosMundo(objetosMundo, MAX_HABITACIONES, ventana, habitacionActual);
+        dibujarObjetosSuelo(inv.espacios, MAX_SLOTS, ventana, habitacionActual);
         dibujarEnemigos(enemigos, numEnemigos, ventana, habitacionActual);
         dibujarJugador(jugador, ventana);
         dibujarOverlayEstado(ventana, estado);
