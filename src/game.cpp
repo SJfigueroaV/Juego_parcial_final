@@ -2,8 +2,11 @@
 #include "../include/map.h"
 #include "../include/player.h"
 #include "../include/enemy.h"
+#include "../include/inventory.h"
+#include "../include/items.h"
 #include <SFML/Graphics.hpp>
 #include <optional>
+#include <cstring>
 
 bool verificarVictoria(int habitacionActual) {
     return habitacionActual == 3;
@@ -22,6 +25,15 @@ bool verificarDerrota(const Jugador &p, const Enemigo enemigos[], int numEnemigo
         }
     }
     return false;
+}
+
+static void inicializarLlaveMundo(Objeto &obj, int habitacion, int fila, int columna) {
+    obj.tipo       = LLAVE;
+    std::strncpy(obj.nombre, "Llave", sizeof(obj.nombre));
+    obj.fila       = fila;
+    obj.columna    = columna;
+    obj.habitacion = habitacion;
+    obj.enSuelo    = true;
 }
 
 static void posicionarEnEntrada(const Habitacion &habitacion, int desdeHabitacion,
@@ -79,6 +91,14 @@ void ejecutarJuego() {
     int numEnemigos = 0;
     inicializarEnemigos(enemigos, numEnemigos);
 
+    Inventario inv;
+    inicializarInventario(inv);
+
+    // Llave en la sala 2 (necesaria para abrir puerta a sala 3)
+    Objeto objetosMundo[MAX_HABITACIONES];
+    for (int i = 0; i < MAX_HABITACIONES; i++) objetosMundo[i].tipo = NINGUNO;
+    inicializarLlaveMundo(objetosMundo[2], 2, 5, 12);
+
     sf::RenderWindow ventana(
         sf::VideoMode(sf::Vector2u{MAX_COLUMNAS * TAM_TILE, MAX_FILAS * TAM_TILE}),
         "Dungeon");
@@ -86,7 +106,8 @@ void ejecutarJuego() {
 
     sf::Clock reloj;
     bool sobrePuertaAntes = false;
-    EstadoJuego estado = JUGANDO;
+    bool tieneLlave        = false;
+    EstadoJuego estado     = JUGANDO;
 
     while (ventana.isOpen()) {
         float dt = reloj.restart().asSeconds();
@@ -94,6 +115,16 @@ void ejecutarJuego() {
         while (std::optional<sf::Event> evento = ventana.pollEvent()) {
             if (evento->is<sf::Event::Closed>()) {
                 ventana.close();
+            } else if (auto *kp = evento->getIf<sf::Event::KeyPressed>()) {
+                if (estado == JUGANDO && kp->scancode == sf::Keyboard::Scancode::E) {
+                    verificarRecoleccion(inv, objetosMundo, MAX_HABITACIONES, jugador);
+                    for (int i = 0; i < MAX_SLOTS; i++) {
+                        if (inv.espacios[i].tipo == LLAVE) {
+                            tieneLlave = true;
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -105,11 +136,14 @@ void ejecutarJuego() {
             const Puerta *puerta = obtenerPuertaEn(
                 habitaciones[habitacionActual], jugador.fila, jugador.columna);
             bool sobrePuerta = (puerta != nullptr);
-            if (sobrePuerta && !sobrePuertaAntes && !puerta->bloqueada) {
-                int destino = puerta->aHabitacion;
-                habitacionActual = destino;
-                posicionarEnEntrada(habitaciones[habitacionActual],
-                                    puerta->aHabitacion, jugador);
+            if (sobrePuerta && !sobrePuertaAntes) {
+                bool puedePasar = !puerta->bloqueada || tieneLlave;
+                if (puedePasar) {
+                    int destino = puerta->aHabitacion;
+                    habitacionActual = destino;
+                    posicionarEnEntrada(habitaciones[habitacionActual],
+                                        puerta->aHabitacion, jugador);
+                }
             }
             sobrePuertaAntes = sobrePuerta;
 
@@ -122,6 +156,7 @@ void ejecutarJuego() {
 
         ventana.clear(sf::Color::Black);
         dibujarHabitacion(habitaciones[habitacionActual], ventana);
+        dibujarObjetosMundo(objetosMundo, MAX_HABITACIONES, ventana, habitacionActual);
         dibujarEnemigos(enemigos, numEnemigos, ventana, habitacionActual);
         dibujarJugador(jugador, ventana);
         dibujarOverlayEstado(ventana, estado);
