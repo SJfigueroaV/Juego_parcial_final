@@ -9,9 +9,9 @@ find_package(SFML 3 COMPONENTS Graphics REQUIRED)
 set(SOURCES
     src/main.cpp
     src/game.cpp
-    src/map.cpp
     src/player.cpp
     src/enemy.cpp
+    src/map.cpp
     src/inventory.cpp
     src/items.cpp
 )

@@ -6,20 +6,18 @@
 #include "enemy.h"
 #include <SFML/Graphics.hpp>
 
-void verificarRecoleccion(Inventario &inv, Objeto objetosMundo[], int numObjetos,
-                          const Jugador &p);
+void verificarRecoleccion(Inventario &inv, Objeto worldItems[], int itemCount,
+                     const Jugador &p);
 
-void verificarEfectosObjetos(Objeto slots[], int numSlots,
-                             Jugador &jugador, Enemigo enemigos[], int numEnemigos,
-                             int habitacionActual);
+void verificarEfectosObjetos(Objeto inventorySlots[], int slotCount,
+                      Jugador &player, Enemigo enemies[], int enemyCount,
+                      int currentRoom);
 
-void actualizarTimersObjetos(Objeto slots[], int numSlots,
-                             Jugador &jugador, float dt);
+void actualizarTimersObjetos(Objeto inventorySlots[], int slotCount,
+                      Jugador &player, Enemigo enemies[], int enemyCount,
+                      float dt);
 
-void dibujarObjetosMundo(const Objeto objetosMundo[], int numObjetos,
-                         sf::RenderWindow &ventana, int habitacionActual);
-
-void dibujarObjetosSuelo(const Objeto slots[], int numSlots,
-                         sf::RenderWindow &ventana, int habitacionActual);
+void dibujarObjetosSuelo(const Objeto inventorySlots[], int slotCount,
+                    sf::RenderWindow &window, int currentRoom);
 
 #endif

@@ -13,12 +13,13 @@ struct Jugador {
     bool  moviendose;
     int   animFrame;
     float animTimer;
-    int   hp;
-    int   maxHp;
 };
 
-void inicializarJugador(Jugador &p, int fila, int columna);
-void manejarEntrada(Jugador &p, const Habitacion &habitacion, float dt);
-void dibujarJugador(const Jugador &p, sf::RenderWindow &ventana);
+void inicializarJugador(Jugador &p, int startRow, int startCol);
+void manejarEntrada(Jugador &p, const Habitacion &room, float dt);
+void dibujarJugador(const Jugador &p, sf::RenderWindow &window);
+
+void cargarTexturaJugadorReposo(const std::string &path);
+void cargarTexturaJugadorCaminando(const std::string &path);
 
 #endif

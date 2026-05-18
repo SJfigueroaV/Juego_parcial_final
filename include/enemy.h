@@ -23,14 +23,21 @@ struct Enemigo {
     int   dirColumna;
     int   intervaloMov;
     int   tiempoMov;
+    float frozenTimer;
+    float slowTimer;
+    float boostTimer;
+    float knockbackVX;
+    float knockbackVY;
     int   habitacion;
+    sf::RectangleShape shape;
 };
 
-void inicializarEnemigos(Enemigo enemigos[], int &numEnemigos);
-void actualizarEnemigos(Enemigo enemigos[], int numEnemigos,
-                        const Jugador &jugador,
-                        const Habitacion &habitacion, int habitacionActual);
-void dibujarEnemigos(const Enemigo enemigos[], int numEnemigos,
-                     sf::RenderWindow &ventana, int habitacionActual);
+void inicializarEnemigos(Enemigo enemies[], int &count);
+void actualizarEnemigos(Enemigo enemies[], int count, const Jugador &player,
+                   const Habitacion &room, float dt, int currentRoom,
+                   const int barrelRows[], const int barrelCols[], int barrelCount);
+void dibujarEnemigos(const Enemigo enemies[], int count,
+                 sf::RenderWindow &window, int currentRoom);
+void aumentarDificultad(Enemigo enemies[], int count, int level);
 
 #endif

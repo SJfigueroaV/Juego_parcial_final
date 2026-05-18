@@ -10,33 +10,36 @@ enum TipoObjeto {
     TRAP,
     SPEEDBOOST,
     BARREL,
-    LLAVE
+    LLAVE,
+    COPA
 };
 
 struct Objeto {
     TipoObjeto tipo;
-    char       nombre[32];
-    bool       placeable;
-    bool       singleUse;
-    int        fila;
-    int        columna;
-    int        habitacion;
-    bool       enSuelo;
-    bool       active;
-    float      effectTimer;
-    float      cooldownTimer;
+    char     nombre[32];
+    bool     placeable;
+    bool     singleUse;
+    int      fila;
+    int      columna;
+    int      habitacion;
+    bool     enSuelo;
+    bool     active;
+    float    effectTimer;
+    float    cooldownTimer;
 };
 
 struct Inventario {
     Objeto espacios[MAX_SLOTS];
-    int    espacioSeleccionado;
-    int    numObjetos;
+    int  espacioSeleccionado;
+    int  numObjetos;
 };
 
 void inicializarInventario(Inventario &inv);
-bool agregarObjeto(Inventario &inv, TipoObjeto tipo);
+bool agregarObjeto(Inventario &inv, TipoObjeto type);
+void agregarObjetoASlot(Inventario &inv, int slot, TipoObjeto type);
 void quitarObjeto(Inventario &inv, int slot);
 void seleccionarSlot(Inventario &inv, int slot);
 void colocarObjeto(Inventario &inv, int slot, int fila, int columna);
+void dibujarInventario(const Inventario &inv, sf::RenderWindow &window, const sf::Font &font);
 
 #endif
