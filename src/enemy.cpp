@@ -98,9 +98,9 @@ void inicializarEnemigos(Enemigo enemies[], int &count) {
     inicializarEnemigo(enemies[count++], PATRULLERO, 0,  1, 12,  1, 0, 4); // starts north, goes south
     inicializarEnemigo(enemies[count++], PATRULLERO, 0, 18, 13, -1, 0, 4); // starts south, goes north
     // Two fast chasers in room 4, bottom-left and top-right corners
-    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17,  3,  0,  1,  9); // col=4 (1-indexed)
-    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17, 13,  0,  1,  9); // col=14 (1-indexed)
-    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17, 22,  0, -1,  9); // col=23 (1-indexed)
+    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17,  3,  0,  1,  7); // col=4 (1-indexed)
+    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17, 13,  0,  1,  7); // col=14 (1-indexed)
+    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17, 22,  0, -1,  7); // col=23 (1-indexed)
     // Habitacion 5 (sala 5): two patrols side-to-side, two chasers at bottom corners
     inicializarEnemigo(enemies[count++], PATRULLERO, 5,  9,  1, 0,  1, 6); // left wall → right
     inicializarEnemigo(enemies[count++], PATRULLERO, 5,  9, 24, 0, -1, 6); // right wall → left
