@@ -13,6 +13,8 @@ struct Jugador {
     bool  moviendose;
     int   animFrame;
     float animTimer;
+    int   hp;
+    int   maxHp;
 };
 
 void inicializarJugador(Jugador &p, int fila, int columna);

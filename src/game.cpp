@@ -62,6 +62,73 @@ static void posicionarEnEntrada(const Habitacion &habitacion, int desdeHabitacio
     }
 }
 
+static void dibujarHUD(sf::RenderWindow &ventana, const Jugador &jugador,
+                       const Inventario &inv, int habitacionActual) {
+    // Barra HP arriba izquierda
+    float barW = 160.0f;
+    float barH = 14.0f;
+    sf::RectangleShape fondoHp(sf::Vector2f{barW, barH});
+    fondoHp.setPosition(sf::Vector2f{10.0f, 10.0f});
+    fondoHp.setFillColor(sf::Color(40, 40, 40));
+    ventana.draw(fondoHp);
+
+    float pct = (float)jugador.hp / (float)jugador.maxHp;
+    sf::RectangleShape hp(sf::Vector2f{barW * pct, barH});
+    hp.setPosition(sf::Vector2f{10.0f, 10.0f});
+    hp.setFillColor(sf::Color(200, 30, 30));
+    ventana.draw(hp);
+
+    // Indicador de habitación (esquina superior derecha, simulado con bloques)
+    for (int i = 0; i < MAX_HABITACIONES; i++) {
+        sf::RectangleShape b(sf::Vector2f{12.0f, 12.0f});
+        b.setPosition(sf::Vector2f{
+            (float)(MAX_COLUMNAS * TAM_TILE) - 16.0f * (MAX_HABITACIONES - i),
+            10.0f
+        });
+        if (i == habitacionActual) {
+            b.setFillColor(sf::Color(255, 215, 0));
+        } else {
+            b.setFillColor(sf::Color(60, 60, 60));
+        }
+        ventana.draw(b);
+    }
+
+    // Panel de inventario abajo
+    const int DISPLAY_SLOTS = 3;
+    float panelY = (float)(MAX_FILAS * TAM_TILE) - 50.0f;
+    for (int i = 0; i < DISPLAY_SLOTS; i++) {
+        sf::RectangleShape slot(sf::Vector2f{40.0f, 40.0f});
+        slot.setPosition(sf::Vector2f{
+            10.0f + (float)i * 48.0f,
+            panelY
+        });
+        slot.setFillColor(sf::Color(30, 30, 30, 220));
+        if (i == inv.espacioSeleccionado) {
+            slot.setOutlineColor(sf::Color::Yellow);
+            slot.setOutlineThickness(2.0f);
+        } else {
+            slot.setOutlineColor(sf::Color(120, 120, 120));
+            slot.setOutlineThickness(1.0f);
+        }
+        ventana.draw(slot);
+
+        // Indicador interno del objeto (color por tipo)
+        const Objeto &obj = inv.espacios[i];
+        if (obj.tipo != NINGUNO && !obj.enSuelo) {
+            sf::RectangleShape inside(sf::Vector2f{20.0f, 20.0f});
+            inside.setPosition(sf::Vector2f{
+                20.0f + (float)i * 48.0f,
+                panelY + 10.0f
+            });
+            if (obj.tipo == LLAVE)           inside.setFillColor(sf::Color(255, 215, 0));
+            else if (obj.tipo == TRAP)       inside.setFillColor(sf::Color(120, 60, 200));
+            else if (obj.tipo == BARREL)     inside.setFillColor(sf::Color(180, 100, 30));
+            else if (obj.tipo == SPEEDBOOST) inside.setFillColor(sf::Color(80, 200, 80));
+            ventana.draw(inside);
+        }
+    }
+}
+
 static void dibujarOverlayEstado(sf::RenderWindow &ventana, EstadoJuego estado) {
     if (estado == JUGANDO) return;
     sf::RectangleShape bg(sf::Vector2f{
@@ -187,6 +254,7 @@ void ejecutarJuego() {
         dibujarObjetosSuelo(inv.espacios, MAX_SLOTS, ventana, habitacionActual);
         dibujarEnemigos(enemigos, numEnemigos, ventana, habitacionActual);
         dibujarJugador(jugador, ventana);
+        dibujarHUD(ventana, jugador, inv, habitacionActual);
         dibujarOverlayEstado(ventana, estado);
         ventana.display();
     }

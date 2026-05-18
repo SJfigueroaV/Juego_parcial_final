@@ -13,6 +13,8 @@ void inicializarJugador(Jugador &p, int fila, int columna) {
     p.moviendose  = false;
     p.animFrame   = 0;
     p.animTimer   = 0.0f;
+    p.hp          = 100;
+    p.maxHp       = 100;
 }
 
 static bool colisionaConPared(const Habitacion &habitacion, float px, float py) {
