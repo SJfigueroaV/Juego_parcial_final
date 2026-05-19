@@ -1,4 +1,4 @@
-# Dungeon Crawler — Parcial Final
+# Dungeons — Parcial Final
 
 Juego top-down en C++17 con SFML 3.x. El objetivo es atravesar 6 habitaciones conectadas, esquivar enemigos, recoger una llave y llegar a la sala final.
 
