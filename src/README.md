@@ -8,21 +8,7 @@
 
 Los flechones indican "incluye a":
 
-```
-                       main.cpp
-                          │
-                          ▼
-                       game.h
-          ┌──────────┬────┴────┬──────────┐
-          ▼          ▼         ▼          ▼
-      player.h   enemy.h   items.h   inventory.h
-          │          │         │              ╎
-          │          │         └──────────────╎─╌╌╌╌╌►╮
-          └──────────┴─────────┘              ╎       ╎
-                          │                  (dashed)  ╎
-                          ▼                            ╎
-                        map.h ◄╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯
-```
+![Dependencias entre módulos](imgs/dependencias.png)
 
 `map.h` es el fundamento: define `TILE_SIZE`, `MAX_ROWS`, `MAX_COLS`, los códigos de tile y la estructura `Room`. Casi todos los módulos lo incluyen porque necesitan saber qué es un tile o cuáles son las dimensiones del mapa.
 
@@ -58,52 +44,7 @@ void runGame() {
 
 #### Diagrama de flujo — un frame completo
 
-```
-              ┌──────────────────────┐
-              │    INICIO DE FRAME   │
-              └──────────┬───────────┘
-                         │
-              dt = clock.restart().asSeconds()
-                         │
-              window.pollEvent()
-              (Closed / Resized / KeyPressed)
-                         │
-                 ┌───────┴────────┐
-                 │ state==PLAYING? │
-                 └───────┬────────┘
-            NO ──────────┤             SÍ
-            │            │             │
-            │     spawnTimer -= dt (invulnerable mientras > 0)
-            │            │
-            │     handleInput(player, room, dt)
-            │            │
-            │     auto-pickup llave / copa
-            │            │
-            │     auto-unlock T_SDOOR / T_LDOOR / T_DLOCKED
-            │            │
-            │     updateEnemies(...)
-            │     turnos + interpolación + knockback
-            │            │
-            │     checkItemEffects + updateItemTimers
-            │            │
-            │     getDoorAt(player.row, player.col)
-            │            │
-            │     ┌──────┴──────────────────┐
-            │     │ ¿door && !prevOnDoor     │ SÍ → currentRoom = toRoom
-            │     │    && canEnter?          │      spawnTimer = 1.5s
-            │     └─────────────────────────┘
-            │            │
-            │     checkDefeat → si true: state = DEFEAT
-            │            │
-            └────────────┘
-                         │
-              window.clear(color)
-                         │
-              drawRoom + drawItems +
-              drawEnemies + drawPlayer + HUD
-                         │
-              window.display()
-```
+![Game loop principal](imgs/gameloop.png)
 
 #### Detalle: prevOnDoor
 
@@ -151,28 +92,7 @@ enum GameState {
 
 #### Máquina de estados
 
-```
-          runGame() start
-                │
-                ▼
-          ┌───────────┐
-          │  PLAYING  │ ◄─────────────────────────┐
-          └─────┬─────┘                           │
-                │                                 │
-     copa+T_SDOOR│            enemigo < 0.5 tile  │
-                │                                 │
-       ┌────────▼──────────┐                      │
-       │      VICTORY      │                      │
-       └───────────────────┘                      │
-                │                                 │
-       ┌────────▼──────────┐                      │
-       │       DEFEAT      │                      │
-       └───────────────────┘                      │
-                │                                 │
-       restartRequested = true (tecla R)           │
-                │                                 │
-                └─────────── reset world ──────────┘
-```
+![Estados del juego](imgs/estados.png)
 
 #### Transiciones
 
@@ -204,20 +124,7 @@ Hay dos buffers (*front* y *back*). Mientras dibujas lo haces sobre el *back*. A
 
 Como SFML no tiene Z-order automático, lo que se dibuja después queda encima:
 
-```
-  ▲  Z mayor
-  │
-  │  8. HUD: healthBar + statusBar + inventario + overlays
-  │  7. drawPlayer + ítem en mano
-  │  6. drawEnemies
-  │  5. drawFloorItems (ítems dejados)
-  │  4. copa especial sobre pedestal (si sala 5)
-  │  3. drawWorldItem (llave/copa fija)
-  │  2. drawRoom(rooms[currentRoom], ...)
-  │  1. window.clear(rgb 10,10,10)
-  │
-  ▼  Z menor
-```
+![Sistema de renderizado](imgs/renderizado.png)
 
 #### Escalado de ventana (makeScaledView)
 
@@ -250,16 +157,7 @@ const float WALK_FRAME_DUR = 0.10f;
 
 #### Estados de animación
 
-```
-              tecla presionada
-  ┌───────────────────────────────────┐
-  │                                   ▼
-IDLE                                WALK
-(2 frames, 0.28s c/u)          (4 frames, 0.10s c/u)
-  ▲                                   │
-  └───────────────────────────────────┘
-              teclas sueltas
-```
+![Animación con sprite sheets](imgs/animacion.png)
 
 La lógica usa un **acumulador de tiempo** independiente del framerate:
 
@@ -395,28 +293,7 @@ if (item.type == SPEEDBOOST) {
 
 #### Auto-pickup de llaves y copa
 
-```
-                  cada frame
-                      │
-                      ▼
-            worldItems[room].type
-           ┌──────────┼──────────┐
-           ▼          ▼          ▼
-         == KEY     == COPA     otro
-      pickup por   pickup por    │
-        casilla     distancia  (nada)
-      (row ==      dist² ≤
-      player.row)  2 × TILE²
-           │          │
-           ▼          ▼
-      según sala:  heldCopa = true
-      room 0 →     copa.type = NONE
-      heldKeyId=1  (desaparece
-      room 1 →      visualmente)
-      heldKeyId=4
-      room 2 →
-      heldKeyId=2
-```
+![Pickup de ítems](imgs/pickup.png)
 
 #### ¿Por qué la copa se recoge por distancia y no por casilla?
 
