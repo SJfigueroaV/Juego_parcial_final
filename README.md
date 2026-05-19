@@ -50,30 +50,13 @@ El mapa tiene 6 salas conectadas así:
 
 ## Innovaciones del equipo
 
-### 1. Knockback físico al chocar chaser contra barril
-**Qué hace:** cuando un chaser rojo intenta moverse hacia un tile con barril, se le aplica una velocidad de 280 px/s en dirección opuesta que decae exponencialmente (`pow(0.004, dt)`) hasta detenerse en ~0.5s.
-
-**Por qué lo agregamos:** la mecánica original de "el chaser se queda quieto al chocar" se veía artificial. El knockback físico continuo lo hace sentir como un objeto rígido empujando otro, y le da al jugador una herramienta táctica real (no sólo bloqueo estático).
-
-### 2. Niebla de guerra en sala 1
-**Qué hace:** sólo se renderizan tiles dentro de un cuadrado de 5×5 alrededor del jugador; el resto queda en negro.
-
-**Por qué:** una sola sala con visión limitada agrega tensión sin frustrar al jugador en todo el mapa. Funciona como "puente psicológico" entre la sala de aprendizaje (sala 0) y el laberinto (sala 2).
-
-### 3. Floor items desacoplados del inventario
-**Qué hace:** los items colocados en el suelo con `P` no ocupan slot del inventario — se guardan en un array independiente. Esto permite colocar una trampa y seguir recogiendo cofres sin perder espacio visible.
-
-**Por qué:** la versión inicial mezclaba ambos (un item en el suelo seguía ocupando un slot del panel), lo que confundía al jugador porque cofres posteriores parecían "no funcionar" (entregaban items a slots ocultos).
-
-### 4. Pixel art procedural para enemigos
-**Qué hace:** los chasers y patrulleros se dibujan con una matriz 7×7 hardcoded y una paleta de 4 colores, no con un sprite externo.
-
-**Por qué:** evita la dependencia de assets adicionales y nos da control fino sobre el "look" del enemigo. También facilita agregar más tipos sin tener que conseguir/editar imágenes.
-
-### 5. Cooldown visible en el SPEEDBOOST
-**Qué hace:** después de activar la velocidad, el slot muestra "CD: 4.2s" en naranja hasta que termina el cooldown.
-
-**Por qué:** sin el indicador, el jugador no sabía si la velocidad ya estaba lista o si la había usado por equivocación. El texto en el slot da feedback inmediato.
+1. **Uso de un set de assets para la mejora gráfica.** Pack utilizado: [Dungeon Asset Puck](https://pixel-poem.itch.io/dungeon-assetpuck?download#google_vignette).
+2. **Implementación de 3 items nuevos** (barril, velocidad, trampa) con los que el jugador puede interactuar para que sea más divertido el juego.
+3. **Implementación de una barra de inventario de 3 slots** para que el jugador sepa qué tiene equipado.
+4. **Implementación de un sistema progresivo por salas** que están bloqueadas por sus correspondientes llaves.
+5. **Implementación de la mecánica de niebla en la sala 3** para completar el laberinto.
+6. **Implementación de cofres** en los que el jugador interactúa presionando la tecla `E` para obtener cierto item.
+7. **Implementación de movimiento fluido del personaje** con coordenadas flotantes, y así mismo con los enemigos.
 
 ---
 
@@ -138,36 +121,11 @@ Si SFML quedó instalado en una ruta no estándar (caso de compilarlo manualment
 cmake -DSFML_DIR=/usr/local/lib/cmake/SFML ..
 ```
 
-### Ejecutar
-
-```bash
-cd build
-./dungeon
-```
-
-> ⚠️ **Importante**: el ejecutable debe correrse desde dentro del directorio `build/` porque las rutas de los sprites son relativas (`../include/sprites/...`).
-
-### Notas adicionales para el profesor
+### Notas adicionales
 
 - Si la HUD se ve sin texto (sólo cuadros), el sistema no tiene ninguna de las fuentes que busca el juego (`NotoSans-Regular.ttf`, `DejaVuSans.ttf`). El juego sigue siendo jugable — sólo no se muestra el HP numérico ni el contador de nivel. Para activar el texto: `sudo apt install fonts-dejavu` (Ubuntu) o equivalente.
 - Si al ejecutar aparece "no such file or directory" para los sprites: verificar que se está corriendo desde `build/`, no desde la raíz.
 - La ventana se escala automáticamente al tamaño del escritorio manteniendo proporción 4:3.
-
----
-
-## Restricciones de diseño cumplidas
-
-- ✅ Lenguaje: C++17 puro
-- ✅ Mínimo 6 habitaciones conectadas (las tenemos exactas)
-- ✅ Colisiones funcionales (AABB con sliding por ejes)
-- ✅ 2 tipos de enemigos con persecución (`PERSEGUIDOR`, `PATRULLERO`)
-- ✅ Render visual del entorno, jugador y enemigos
-- ✅ Sistema de inventario con recoger/soltar
-- ✅ Condiciones claras de victoria y derrota
-- ✅ Código en múltiples archivos `.h` / `.cpp`
-- ✅ Uso verificable de punteros (ej. `const Puerta *obtenerPuertaEn(...)`, `const sf::Texture *obtenerTileset()`)
-- ✅ Build automatizado con CMake
-- ✅ Sólo arreglos estáticos — cero `new` / `delete` en todo el código
 
 ---
 
