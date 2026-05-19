@@ -131,7 +131,7 @@ void dibujarInventario(const Inventario &inv, sf::RenderWindow &window, const sf
         const Objeto &slot = inv.espacios[i];
         bool onFloor  = slot.enSuelo && slot.tipo != NINGUNO;
         bool onCooldown = (slot.tipo == SPEEDBOOST) && (slot.cooldownTimer > 0.0f) && !onFloor;
-        // Slot visually empty when item is on the floor
+
         bool showItem = (slot.tipo != NINGUNO) && !onFloor;
 
         if (i == inv.espacioSeleccionado) {

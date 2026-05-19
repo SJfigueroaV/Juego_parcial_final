@@ -252,19 +252,16 @@ static void construirHabitacion0(Habitacion &room) {
     inicializarHabitacionVacia(room);
     agregarPuerta(room, MAX_FILAS-1, 12, 0, false);
 
-    // Row 7 (r=6): top outer wall
     room.cuadricula[6][6]  = T_WTL;
     for (int c = 7; c <= 18; c++) room.cuadricula[c][6] = T_WT;
     room.cuadricula[19][6] = T_WTR;
 
-    // Row 8 (r=7): frame top
     room.cuadricula[6][7]  = T_WTL;
     room.cuadricula[7][7]  = T_FTL;
     for (int c = 8; c <= 17; c++) room.cuadricula[c][7] = T_FT;
     room.cuadricula[18][7] = T_FTR;
     room.cuadricula[19][7] = T_WTR;
 
-    // Rows 9-14 (r=8..13): interior with frame sides
     for (int r = 8; r <= 13; r++) {
         room.cuadricula[6][r]  = T_WTL;
         room.cuadricula[7][r]  = T_FL;
@@ -272,11 +269,10 @@ static void construirHabitacion0(Habitacion &room) {
         room.cuadricula[18][r] = T_FR;
         room.cuadricula[19][r] = T_WTR;
     }
-    // Two chests in the interior (row 10)
+
     room.cuadricula[11][10] = T_CHEST;
     room.cuadricula[14][10] = T_CHEST;
 
-    // Row 15 (r=14): frame bottom with door opening
     room.cuadricula[6][14]  = T_WTL;
     room.cuadricula[7][14]  = T_FBL;
     for (int c = 8; c <= 11; c++) room.cuadricula[c][14] = T_FB;
@@ -286,7 +282,6 @@ static void construirHabitacion0(Habitacion &room) {
     room.cuadricula[18][14] = T_FBR;
     room.cuadricula[19][14] = T_WTR;
 
-    // Row 16 (r=15): outer bottom wall with corridor opening
     room.cuadricula[6][15]  = T_WBL;
     for (int c = 7; c <= 10; c++) room.cuadricula[c][15] = T_WB;
     room.cuadricula[11][15] = T_PIL_R;
@@ -296,7 +291,6 @@ static void construirHabitacion0(Habitacion &room) {
     for (int c = 15; c <= 18; c++) room.cuadricula[c][15] = T_WB;
     room.cuadricula[19][15] = T_WBR;
 
-    // Rows 17-19 (r=16..18): corridor
     for (int r = 16; r <= 18; r++) {
         room.cuadricula[11][r] = T_WTL;
         room.cuadricula[12][r] = T_FD;
@@ -304,7 +298,6 @@ static void construirHabitacion0(Habitacion &room) {
         room.cuadricula[14][r] = T_WTR;
     }
 
-    // Row 20 (r=19): south door frame corners
     room.cuadricula[11][19] = T_WTL;
     room.cuadricula[14][19] = T_WTR;
 
@@ -320,11 +313,9 @@ static void construirHabitacion1(Habitacion &room) {
     room.cuadricula[12][MAX_FILAS-1] = T_DLOCKED;
     room.cuadricula[13][MAX_FILAS-1] = T_DLOCKED;
 
-    // Row 1 (r=0)
     room.cuadricula[11][0] = T_WTL;
     room.cuadricula[14][0] = T_WTR;
 
-    // Rows 2-5 (r=1-4): corridor
     for (int r = 1; r <= 4; r++) {
         room.cuadricula[11][r] = T_WTL;
         room.cuadricula[12][r] = T_FLOOR3;
@@ -332,7 +323,6 @@ static void construirHabitacion1(Habitacion &room) {
         room.cuadricula[14][r] = T_WTR;
     }
 
-    // Row 6 (r=5)
     room.cuadricula[2][5] = T_WTL;
     for (int c = 3; c <= 9; c++) room.cuadricula[c][5] = T_WT;
     room.cuadricula[10][5] = T_WTR; room.cuadricula[11][5] = T_WTL;
@@ -341,7 +331,6 @@ static void construirHabitacion1(Habitacion &room) {
     for (int c = 16; c <= 22; c++) room.cuadricula[c][5] = T_WT;
     room.cuadricula[23][5] = T_WTR;
 
-    // Row 7 (r=6)
     room.cuadricula[2][6] = T_WTL; room.cuadricula[3][6] = T_FTL;
     for (int c = 4; c <= 8; c++) room.cuadricula[c][6] = T_FT;
     room.cuadricula[9][6]  = T_FTR; room.cuadricula[10][6] = T_WTR;
@@ -350,7 +339,6 @@ static void construirHabitacion1(Habitacion &room) {
     for (int c = 17; c <= 21; c++) room.cuadricula[c][6] = T_FT;
     room.cuadricula[22][6] = T_FTR; room.cuadricula[23][6] = T_WTR;
 
-    // Row 8 (r=7)
     room.cuadricula[2][7] = T_WTL; room.cuadricula[3][7] = T_FL;
     for (int c = 4; c <= 8; c++) room.cuadricula[c][7] = T_FLOOR3;
     room.cuadricula[9][7]  = T_FR;  room.cuadricula[10][7] = T_WT; room.cuadricula[11][7] = T_WT;
@@ -359,7 +347,6 @@ static void construirHabitacion1(Habitacion &room) {
     for (int c = 17; c <= 21; c++) room.cuadricula[c][7] = T_FLOOR3;
     room.cuadricula[22][7] = T_FR; room.cuadricula[23][7] = T_WTR;
 
-    // Row 9 (r=8)
     room.cuadricula[2][8] = T_WTL; room.cuadricula[3][8] = T_FL;
     for (int c = 4; c <= 9; c++) room.cuadricula[c][8] = T_FLOOR3;
     room.cuadricula[10][8] = T_FT; room.cuadricula[11][8] = T_FT;
@@ -368,16 +355,14 @@ static void construirHabitacion1(Habitacion &room) {
     for (int c = 16; c <= 21; c++) room.cuadricula[c][8] = T_FLOOR3;
     room.cuadricula[22][8] = T_FR; room.cuadricula[23][8] = T_WTR;
 
-    // Rows 10-11 (r=9-10)
     for (int r = 9; r <= 10; r++) {
         room.cuadricula[2][r] = T_WTL; room.cuadricula[3][r] = T_FL;
         for (int c = 4; c <= 21; c++) room.cuadricula[c][r] = T_FLOOR3;
         room.cuadricula[22][r] = T_FR; room.cuadricula[23][r] = T_WTR;
     }
-    // Test chest for barrel debug (col=6, row=9) — one tile right of player spawn
+
     room.cuadricula[6][9] = T_CHEST;
 
-    // Row 12 (r=11): pillars
     room.cuadricula[2][11] = T_WTL; room.cuadricula[3][11] = T_FL;
     for (int c = 4; c <= 8; c++) room.cuadricula[c][11] = T_FLOOR3;
     room.cuadricula[9][11]  = T_FR;
@@ -387,7 +372,6 @@ static void construirHabitacion1(Habitacion &room) {
     for (int c = 16; c <= 21; c++) room.cuadricula[c][11] = T_FLOOR3;
     room.cuadricula[22][11] = T_FR; room.cuadricula[23][11] = T_WTR;
 
-    // Row 13 (r=12): frame bottom rail with FBL/FBR corners
     room.cuadricula[2][12] = T_WTL; room.cuadricula[3][12] = T_FBL;
     for (int c = 4; c <= 8; c++) room.cuadricula[c][12] = T_FB;
     room.cuadricula[9][12]  = T_FBR;
@@ -397,7 +381,6 @@ static void construirHabitacion1(Habitacion &room) {
     for (int c = 16; c <= 21; c++) room.cuadricula[c][12] = T_FB;
     room.cuadricula[22][12] = T_FBR; room.cuadricula[23][12] = T_WTR;
 
-    // Row 14 (r=13): bottom walls
     room.cuadricula[2][13] = T_WBL;
     for (int c = 3; c <= 9; c++) room.cuadricula[c][13] = T_WB;
     room.cuadricula[10][13] = T_WBR; room.cuadricula[11][13] = T_WTL;
@@ -406,7 +389,6 @@ static void construirHabitacion1(Habitacion &room) {
     for (int c = 16; c <= 22; c++) room.cuadricula[c][13] = T_WB;
     room.cuadricula[23][13] = T_WBR;
 
-    // Rows 15-19 (r=14-18): corridor
     for (int r = 14; r <= 18; r++) {
         room.cuadricula[11][r] = T_WTL;
         room.cuadricula[12][r] = T_FLOOR3;
@@ -414,43 +396,39 @@ static void construirHabitacion1(Habitacion &room) {
         room.cuadricula[14][r] = T_WTR;
     }
 
-    // Row 20 (r=19): south door frame
     room.cuadricula[11][19] = T_WTL;
     room.cuadricula[14][19] = T_WTR;
 
-    // Tile 56 decoration at (col=19, row=5)
     room.cuadricula[19][5] = T_SDOOR;
 }
 
 static void construirHabitacion2(Habitacion &room) {
     llenarHabitacionBasica(room);
 
-    // Maze walls (user coords are 1-indexed (row,col); mapped to layout[col-1][row-1])
-    // row 1
     for (int c = 0; c <= 11; c++) room.cuadricula[c][0] = T_W;
     for (int c = 14; c <= 25; c++) room.cuadricula[c][0] = T_W;
-    // row 2
+
     room.cuadricula[0][1] = T_W; room.cuadricula[17][1] = T_W; room.cuadricula[25][1] = T_W;
-    // row 3
+
     for (int c = 0; c <= 11; c++) room.cuadricula[c][2] = T_W;
     for (int c = 14; c <= 17; c++) room.cuadricula[c][2] = T_W;
     for (int c = 19; c <= 23; c++) room.cuadricula[c][2] = T_W;
     room.cuadricula[25][2] = T_W;
-    // row 4
+
     room.cuadricula[0][3] = T_W;
     for (int c = 4; c <= 8; c++) room.cuadricula[c][3] = T_W;
     room.cuadricula[16][3] = T_W; room.cuadricula[17][3] = T_W;
     room.cuadricula[19][3] = T_W; room.cuadricula[23][3] = T_W; room.cuadricula[25][3] = T_W;
-    // row 5
+
     room.cuadricula[0][4] = T_W; room.cuadricula[2][4] = T_W; room.cuadricula[4][4] = T_W;
     for (int c = 8; c <= 14; c++) room.cuadricula[c][4] = T_W;
     room.cuadricula[16][4] = T_W; room.cuadricula[17][4] = T_W; room.cuadricula[19][4] = T_W;
     room.cuadricula[21][4] = T_W; room.cuadricula[22][4] = T_W; room.cuadricula[23][4] = T_W;
     room.cuadricula[25][4] = T_W;
-    // row 6
+
     room.cuadricula[0][5] = T_W; room.cuadricula[2][5] = T_W; room.cuadricula[6][5] = T_W;
     room.cuadricula[11][5] = T_W; room.cuadricula[19][5] = T_W; room.cuadricula[25][5] = T_W;
-    // row 7
+
     room.cuadricula[0][6] = T_W;
     for (int c = 2; c <= 9; c++) room.cuadricula[c][6] = T_W;
     room.cuadricula[11][6] = T_W; room.cuadricula[13][6] = T_W;
@@ -458,71 +436,71 @@ static void construirHabitacion2(Habitacion &room) {
     room.cuadricula[19][6] = T_W;
     room.cuadricula[21][6] = T_W; room.cuadricula[22][6] = T_W; room.cuadricula[23][6] = T_W;
     room.cuadricula[25][6] = T_W;
-    // row 8
+
     room.cuadricula[0][7] = T_W; room.cuadricula[2][7] = T_W; room.cuadricula[4][7] = T_W;
     room.cuadricula[11][7] = T_W; room.cuadricula[13][7] = T_W; room.cuadricula[17][7] = T_W;
     room.cuadricula[19][7] = T_W; room.cuadricula[21][7] = T_W; room.cuadricula[25][7] = T_W;
-    // row 9
+
     room.cuadricula[0][8] = T_W; room.cuadricula[2][8] = T_W; room.cuadricula[4][8] = T_W;
     room.cuadricula[6][8] = T_W;
     for (int c = 8; c <= 15; c++) room.cuadricula[c][8] = T_W;
     room.cuadricula[17][8] = T_W; room.cuadricula[19][8] = T_W; room.cuadricula[21][8] = T_W;
     room.cuadricula[23][8] = T_W; room.cuadricula[24][8] = T_W; room.cuadricula[25][8] = T_W;
-    // row 10
+
     room.cuadricula[0][9] = T_W; room.cuadricula[2][9] = T_W; room.cuadricula[6][9] = T_W;
     room.cuadricula[15][9] = T_W; room.cuadricula[17][9] = T_W; room.cuadricula[19][9] = T_W;
     room.cuadricula[21][9] = T_W; room.cuadricula[25][9] = T_W;
-    // row 11
+
     room.cuadricula[0][10] = T_W;
     for (int c = 2; c <= 13; c++) room.cuadricula[c][10] = T_W;
     room.cuadricula[15][10] = T_W; room.cuadricula[17][10] = T_W; room.cuadricula[19][10] = T_W;
     room.cuadricula[21][10] = T_W; room.cuadricula[22][10] = T_W; room.cuadricula[23][10] = T_W;
     room.cuadricula[25][10] = T_W;
-    // row 12
+
     room.cuadricula[0][11] = T_W; room.cuadricula[4][11] = T_W; room.cuadricula[11][11] = T_W;
     room.cuadricula[13][11] = T_W; room.cuadricula[15][11] = T_W;
     room.cuadricula[17][11] = T_W; room.cuadricula[18][11] = T_W; room.cuadricula[19][11] = T_W;
     room.cuadricula[23][11] = T_W; room.cuadricula[25][11] = T_W;
-    // row 13
+
     room.cuadricula[0][12] = T_W; room.cuadricula[1][12] = T_W; room.cuadricula[2][12] = T_W;
     room.cuadricula[4][12] = T_W;
     for (int c = 6; c <= 9; c++) room.cuadricula[c][12] = T_W;
     room.cuadricula[11][12] = T_W; room.cuadricula[19][12] = T_W; room.cuadricula[21][12] = T_W;
     room.cuadricula[23][12] = T_W; room.cuadricula[24][12] = T_W; room.cuadricula[25][12] = T_W;
-    // row 14
+
     room.cuadricula[0][13] = T_W; room.cuadricula[2][13] = T_W; room.cuadricula[9][13] = T_W;
     room.cuadricula[11][13] = T_W; room.cuadricula[12][13] = T_W;
     for (int c = 14; c <= 19; c++) room.cuadricula[c][13] = T_W;
     room.cuadricula[21][13] = T_W; room.cuadricula[25][13] = T_W;
-    // row 15
+
     room.cuadricula[0][14] = T_W;
     for (int c = 2; c <= 7; c++) room.cuadricula[c][14] = T_W;
     room.cuadricula[9][14] = T_W;
     room.cuadricula[12][14] = T_W; room.cuadricula[14][14] = T_W;
     for (int c = 19; c <= 23; c++) room.cuadricula[c][14] = T_W;
     room.cuadricula[25][14] = T_W;
-    // row 16
+
     room.cuadricula[0][15] = T_W; room.cuadricula[9][15] = T_W;
     for (int c = 12; c <= 16; c++) room.cuadricula[c][15] = T_W;
     room.cuadricula[23][15] = T_W; room.cuadricula[25][15] = T_W;
-    // row 17
+
     room.cuadricula[0][16] = T_W;
     for (int c = 2; c <= 9; c++) room.cuadricula[c][16] = T_W;
     room.cuadricula[16][16] = T_W;
     room.cuadricula[18][16] = T_W; room.cuadricula[19][16] = T_W;
     room.cuadricula[21][16] = T_W; room.cuadricula[22][16] = T_W; room.cuadricula[23][16] = T_W;
     room.cuadricula[25][16] = T_W;
-    // row 18
+
     room.cuadricula[0][17] = T_W;
     for (int c = 2; c <= 10; c++) room.cuadricula[c][17] = T_W;
     room.cuadricula[16][17] = T_W; room.cuadricula[19][17] = T_W;
     room.cuadricula[21][17] = T_W; room.cuadricula[22][17] = T_W;
     room.cuadricula[25][17] = T_W;
-    // row 19
+
     room.cuadricula[0][18] = T_W; room.cuadricula[10][18] = T_W;
     room.cuadricula[16][18] = T_W; room.cuadricula[17][18] = T_W;
     room.cuadricula[19][18] = T_W; room.cuadricula[25][18] = T_W;
-    // row 20
+
     for (int c = 0; c <= 11; c++) room.cuadricula[c][19] = T_W;
     for (int c = 14; c <= 25; c++) room.cuadricula[c][19] = T_W;
 
@@ -531,7 +509,6 @@ static void construirHabitacion2(Habitacion &room) {
     room.cuadricula[10][15] = T_LDOOR;
     room.cuadricula[11][15] = T_LDOOR;
 
-    // Two chests in the open area just inside the north entrance
     room.cuadricula[14][18] = T_CHEST;
     room.cuadricula[15][18] = T_CHEST;
 }
@@ -558,7 +535,7 @@ static void construirHabitacion5(Habitacion &room) {
     llenarHabitacionBasica(room);
     llenarSueloOscuro(room);
     agregarPuerta(room, 0, MAX_COLUMNAS/2-1, 2, false);
-    // Single cup holder at center-bottom
+
     room.cuadricula[13][17] = T_HOLDER;
 }
 

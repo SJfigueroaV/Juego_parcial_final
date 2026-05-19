@@ -94,18 +94,18 @@ static void inicializarEnemigo(Enemigo &e, TipoEnemigo type, int roomIndex,
 
 void inicializarEnemigos(Enemigo enemies[], int &count) {
     count = 0;
-    // Two patrol enemies in room 0's north-south corridor (cols 12-13, rows 1-18)
-    inicializarEnemigo(enemies[count++], PATRULLERO, 0,  1, 12,  1, 0, 4); // starts north, goes south
-    inicializarEnemigo(enemies[count++], PATRULLERO, 0, 18, 13, -1, 0, 4); // starts south, goes north
-    // Two fast chasers in room 4, bottom-left and top-right corners
-    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17,  3,  0,  1,  7); // col=4 (1-indexed)
-    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17, 13,  0,  1,  7); // col=14 (1-indexed)
-    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17, 22,  0, -1,  7); // col=23 (1-indexed)
-    // Habitacion 5 (sala 5): two patrols side-to-side, two chasers at bottom corners
-    inicializarEnemigo(enemies[count++], PATRULLERO, 5,  9,  1, 0,  1, 6); // left wall → right
-    inicializarEnemigo(enemies[count++], PATRULLERO, 5,  9, 24, 0, -1, 6); // right wall → left
-    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 5, 17,  2, 0,  1,  9); // bottom-left
-    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 5, 17, 23, 0, -1,  9); // bottom-right
+
+    inicializarEnemigo(enemies[count++], PATRULLERO, 0,  1, 12,  1, 0, 4);
+    inicializarEnemigo(enemies[count++], PATRULLERO, 0, 18, 13, -1, 0, 4);
+
+    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17,  3,  0,  1,  7);
+    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17, 13,  0,  1,  7);
+    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 4, 17, 22,  0, -1,  7);
+
+    inicializarEnemigo(enemies[count++], PATRULLERO, 5,  9,  1, 0,  1, 6);
+    inicializarEnemigo(enemies[count++], PATRULLERO, 5,  9, 24, 0, -1, 6);
+    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 5, 17,  2, 0,  1,  9);
+    inicializarEnemigo(enemies[count++], PERSEGUIDOR, 5, 17, 23, 0, -1,  9);
 }
 
 static bool hayBarrilEn(const int barrelRows[], const int barrelCols[], int barrelCount,
@@ -151,7 +151,6 @@ static void actualizarPerseguidor(Enemigo &e, const Jugador &player, const Habit
         e.columna += sc;
     }
 
-    // If stuck due to a barrel, launch a physics knockback in opposite direction
     if (e.fila == prevRow && e.columna == prevCol) {
         bool blockedByBarrel =
             (sr != 0 && hayBarrilEn(barrelRows, barrelCols, barrelCount, e.fila + sr, e.columna)) ||
@@ -195,7 +194,6 @@ void actualizarEnemigos(Enemigo enemies[], int count, const Jugador &player,
             continue;
         }
 
-        // Defense 1: if barrel was placed on top of this enemy's grid tile, push off
         {
             bool onBarrel = false;
             for (int bi = 0; bi < barrelCount && !onBarrel; bi++) {
@@ -247,7 +245,7 @@ void actualizarEnemigos(Enemigo enemies[], int count, const Jugador &player,
                                    enemies[i].knockbackVY * enemies[i].knockbackVY);
 
         if (knockMag > 4.0f) {
-            // Physics knockback: exponential drag (~0.5% of speed remains after 1 second)
+
             float decay = std::pow(0.004f, dt);
             float nx    = enemies[i].x + enemies[i].knockbackVX * dt;
             float ny    = enemies[i].y + enemies[i].knockbackVY * dt;
@@ -268,7 +266,6 @@ void actualizarEnemigos(Enemigo enemies[], int count, const Jugador &player,
             enemies[i].knockbackVX *= decay;
             enemies[i].knockbackVY *= decay;
 
-            // Keep grid position in sync with pixel position
             enemies[i].columna = (int)((enemies[i].x + (float)TAM_TILE * 0.5f) / TAM_TILE);
             enemies[i].fila = (int)((enemies[i].y + (float)TAM_TILE * 0.5f) / TAM_TILE);
         } else {
@@ -288,7 +285,7 @@ void actualizarEnemigos(Enemigo enemies[], int count, const Jugador &player,
                 enemies[i].x = targetX;
                 enemies[i].y = targetY;
             } else {
-                // Defense 2: don't let the pixel enter a barrel tile's pixel space
+
                 float nx   = enemies[i].x + dx / dist * step;
                 float ny   = enemies[i].y + dy / dist * step;
                 int   nCol = (int)(nx / TAM_TILE);

@@ -3,11 +3,6 @@
 #include <cmath>
 #include <cstdio>
 
-// Tile coords in Dungeon_item_props_v2.png (16x16, 12 per row, 1-indexed)
-// Tile N: row=(N-1)/12, col=(N-1)%12  →  x=col*16, y=row*16
-// Tile 49 → (0,  64)  – Trampa
-// Tile 53 → (64, 64)  – Barril
-// Tile 23 → (160, 16) – Velocidad en suelo
 static const sf::IntRect TRAP_RECT  (sf::Vector2i{  0, 64}, sf::Vector2i{16, 16});
 static const sf::IntRect BARREL_RECT(sf::Vector2i{ 64, 64}, sf::Vector2i{16, 16});
 static const sf::IntRect SPEED_RECT (sf::Vector2i{160, 16}, sf::Vector2i{16, 16});
@@ -30,8 +25,6 @@ static void dibujarSpriteProp(sf::RenderWindow &window,
     spr.setPosition(sf::Vector2f{worldX, worldY});
     window.draw(spr);
 }
-
-// -----------------------------------------------------------------------
 
 void verificarRecoleccion(Inventario &inv, Objeto worldItems[], int itemCount,
                      const Jugador &p) {
@@ -57,21 +50,19 @@ void verificarEfectosObjetos(Objeto inventorySlots[], int slotCount,
         if (item.habitacion != currentRoom)         continue;
 
         if (item.tipo == TRAP) {
-            if (item.active) continue; // already triggered
+            if (item.active) continue;
             for (int e = 0; e < enemyCount; e++) {
                 if (!enemies[e].vivo) continue;
                 if (enemies[e].habitacion != currentRoom) continue;
                 if (enemies[e].fila == item.fila && enemies[e].columna == item.columna) {
-                    enemies[e].frozenTimer = 1.0e9f; // permanent stun
+                    enemies[e].frozenTimer = 1.0e9f;
                     item.active  = true;
-                    // Remove from slot so it appears empty — item stays on floor
-                    // (slot.tipo stays TRAP so dibujarObjetosSuelo can still render it,
-                    //  but dibujarInventario hides it because isOnFloor=true)
+
                     break;
                 }
             }
         } else if (item.tipo == BARREL) {
-            if (item.active) continue; // cooldown
+            if (item.active) continue;
             for (int e = 0; e < enemyCount; e++) {
                 if (!enemies[e].vivo) continue;
                 if (enemies[e].habitacion != currentRoom) continue;
@@ -85,7 +76,7 @@ void verificarEfectosObjetos(Objeto inventorySlots[], int slotCount,
                 }
             }
         }
-        // SPEEDBOOST is activated directly by the player (not floor-triggered)
+
     }
 }
 
@@ -101,13 +92,13 @@ void actualizarTimersObjetos(Objeto inventorySlots[], int slotCount,
 
         if (item.tipo == SPEEDBOOST) {
             if (item.active) {
-                // Boost duration
+
                 item.effectTimer -= dt;
                 if (item.effectTimer <= 0.0f) {
                     item.effectTimer = 0.0f;
                     item.active      = false;
                     player.velocidad     = 210.0f;
-                    item.cooldownTimer = 5.0f; // start cooldown after boost ends
+                    item.cooldownTimer = 5.0f;
                 }
             } else if (item.cooldownTimer > 0.0f) {
                 item.cooldownTimer -= dt;
@@ -120,7 +111,7 @@ void actualizarTimersObjetos(Objeto inventorySlots[], int slotCount,
                 item.active      = false;
             }
         }
-        // TRAP stays active indefinitely on the floor; picked up via E
+
     }
 }
 

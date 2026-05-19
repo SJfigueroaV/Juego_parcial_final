@@ -248,17 +248,17 @@ void ejecutarJuego() {
 
         Cofre chests[MAX_CHESTS];
         int   chestCount = 0;
-        // Chests in rooms[1] (mini-sala)
+
         chests[0].fila = 10; chests[0].columna = 11; chests[0].habitacion = 1;
         chests[0].opened = false; chests[0].itemType = TRAP;
         chests[1].fila = 10; chests[1].columna = 14; chests[1].habitacion = 1;
         chests[1].opened = false; chests[1].itemType = SPEEDBOOST;
-        // Chests in rooms[2] (maze open area)
+
         chests[2].fila = 18; chests[2].columna = 14; chests[2].habitacion = 2;
         chests[2].opened = false; chests[2].itemType = TRAP;
         chests[3].fila = 18; chests[3].columna = 15; chests[3].habitacion = 2;
         chests[3].opened = false; chests[3].itemType = BARREL;
-        // Test chest: barrel debug (rooms[0], col=6, row=9)
+
         chests[4].fila = 9; chests[4].columna = 6; chests[4].habitacion = 0;
         chests[4].opened = false; chests[4].itemType = BARREL;
         chestCount = 5;
@@ -286,7 +286,7 @@ void ejecutarJuego() {
         worldItems[4].enSuelo   = false;
         worldItems[4].active      = false;
         worldItems[4].effectTimer = 0.0f;
-        // COPA in rooms[5]
+
         std::strncpy(worldItems[5].nombre, "Copa", sizeof(worldItems[5].nombre));
         worldItems[5].tipo          = COPA;
         worldItems[5].placeable     = false;
@@ -331,7 +331,6 @@ void ejecutarJuego() {
                             int  dcs[5] = {0,  0, 0, -1, 1};
                             Habitacion &cur   = rooms[currentRoom];
 
-                            // 1. Pick up own floor item
                             for (int s = 0; s < MAX_SLOTS && !interacted; s++) {
                                 if (floorItems[s].tipo != NINGUNO &&
                                     floorItems[s].habitacion == currentRoom &&
@@ -344,7 +343,6 @@ void ejecutarJuego() {
                                 }
                             }
 
-                            // 5. Open chest
                             if (!interacted) {
                                 for (int d = 0; d < 5 && !interacted; d++) {
                                     int nr = player.fila + drs[d];
@@ -368,7 +366,6 @@ void ejecutarJuego() {
                                 }
                             }
 
-                            // 6. Activate ability or place item (only if no world interaction)
                             if (!interacted) {
                                 Objeto &sel = inv.espacios[inv.espacioSeleccionado];
                                 if (sel.tipo == SPEEDBOOST && !sel.enSuelo &&
@@ -464,7 +461,6 @@ void ejecutarJuego() {
 
                 manejarEntrada(player, rooms[currentRoom], dt);
 
-                // Auto-pickup world key when player walks over it
                 {
                     if (worldItems[currentRoom].tipo == LLAVE) {
                         int prevCount = inv.numObjetos;
@@ -482,7 +478,7 @@ void ejecutarJuego() {
                         }
                     }
                 }
-                // Auto-pickup copa by pixel proximity (holder is solid, can't step on it)
+
                 {
                     if (!heldCopa && worldItems[currentRoom].tipo == COPA) {
                         Objeto &copa  = worldItems[currentRoom];
@@ -501,13 +497,12 @@ void ejecutarJuego() {
                     }
                 }
 
-                // Auto-unlock locked door when player is adjacent and has the key
                 {
                     Habitacion &cur2 = rooms[currentRoom];
                     int drs2[5] = {0, -1, 1,  0, 0};
                     int dcs2[5] = {0,  0, 0, -1, 1};
                     bool unlocked = false;
-                    // Copa: opens the special blue door (T_SDOOR) → victory
+
                     if (heldCopa) {
                         for (int d = 0; d < 5 && !unlocked; d++) {
                             int nr = player.fila + drs2[d];
@@ -634,7 +629,6 @@ void ejecutarJuego() {
             dibujarEnemigos(enemies, enemyCount, window, currentRoom);
             dibujarJugador(player, window);
 
-            // Draw selected item sprite to the left of the player
             {
                 const Objeto &sel = inv.espacios[inv.espacioSeleccionado];
                 float ix = player.x - (float)TAM_TILE * 0.65f;
