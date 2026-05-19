@@ -1,5 +1,4 @@
 build/
-.claude/
 .cache/
 *.o
 *.obj
